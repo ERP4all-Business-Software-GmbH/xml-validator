@@ -44,14 +44,18 @@ import net.sf.saxon.s9api.Serializer;
  * POST Request zu realisieren.
  */
 @Slf4j
-@RequiredArgsConstructor
 class CheckHandler extends BaseHandler {
 
     private static final AtomicLong counter = new AtomicLong(0);
 
-    private final Check implemenation;
+    private Check implemenation;
 
-    private final Processor processor;
+    private Processor processor;
+
+    CheckHandler(Check implemenation, Processor processor) {
+        this.implemenation = implemenation;
+        this.processor = processor;
+    }
 
     /**
      * Methode, die eine gegebene Anforderung verarbeitet und eine entsprechende Antwort generiert
@@ -62,7 +66,6 @@ class CheckHandler extends BaseHandler {
     @Override
     public void handle(final HttpExchange httpExchange) throws IOException {
         try {
-            log.debug("Incoming request");
             final String requestMethod = httpExchange.getRequestMethod();
             // check neccessary, since gui can be disabled
             if (requestMethod.equals("POST")) {
@@ -80,7 +83,6 @@ class CheckHandler extends BaseHandler {
                 error(httpExchange, HttpStatus.SC_METHOD_NOT_ALLOWED, "Method not supported");
             }
         } catch (final Exception e) {
-            log.error("Error checking entity", e);
             error(httpExchange, HttpStatus.SC_INTERNAL_SERVER_ERROR, "Internal error: " + e.getMessage());
         }
     }
@@ -124,7 +126,6 @@ class CheckHandler extends BaseHandler {
             serializer.serializeNode(result.getReport());
             return out.toByteArray();
         } catch (final SaxonApiException | IOException e) {
-            log.error("Error serializing result", e);
             throw new IllegalStateException("Can not serialize result", e);
         }
     }

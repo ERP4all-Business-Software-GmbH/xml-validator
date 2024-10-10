@@ -16,33 +16,27 @@
 
 package de.kosit.validationtool.daemon;
 
-import java.io.IOException;
-
 import com.sun.net.httpserver.HttpExchange;
-
 import lombok.RequiredArgsConstructor;
+
+import java.io.IOException;
 
 /**
  * A simple handler which routes between the {@link CheckHandler} and the {@link GuiHandler} depending on the request.
  */
-class RoutingHandler extends BaseHandler {
+class ValidateRoutingHandler extends BaseHandler {
 
-    private CheckHandler checkHandler;
+    private ValidateHandler vHandler;
 
-    private GuiHandler guiHandler;
-
-    RoutingHandler(CheckHandler checkHandler, GuiHandler guiHandler) {
-        this.checkHandler = checkHandler;
-        this.guiHandler = guiHandler;
+    ValidateRoutingHandler(ValidateHandler vHandler) {
+        this.vHandler = vHandler;
     }
 
     @Override
     public void handle(final HttpExchange exchange) throws IOException {
         final String requestMethod = exchange.getRequestMethod();
         if (requestMethod.equals("POST")) {
-            this.checkHandler.handle(exchange);
-        } else if (requestMethod.equals("GET")) {
-            this.guiHandler.handle(exchange);
+            this.vHandler.handle(exchange);
         } else {
             error(exchange, 405, String.format("Method % not supported", requestMethod));
         }

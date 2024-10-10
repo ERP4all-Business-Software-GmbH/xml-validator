@@ -27,7 +27,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 class TransformRoutingHandler extends BaseHandler {
 
-    private final TransformHandler checkHandler;
+    private TransformHandler checkHandler;
 
     TransformRoutingHandler(TransformHandler checkHandler) {
         this.checkHandler = checkHandler;

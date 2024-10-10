@@ -34,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.impl.ConversionService;
 import de.kosit.validationtool.impl.DefaultCheck;
-import de.kosit.validationtool.model.daemon.HealthType;
+//import de.kosit.validationtool.model.daemon.HealthType;
 
 import net.sf.saxon.s9api.Processor;
 
@@ -81,31 +81,35 @@ public class Daemon {
     public void startServer(final Processor processor, final Configuration... config) {
         HttpServer server = null;
         try {
-            final ConversionService healthConverter = new ConversionService();
-            healthConverter.initialize(HealthType.class.getPackage());
+            // final ConversionService healthConverter = new ConversionService();
+            // healthConverter.initialize(HealthType.class.getPackage());
             final ConversionService converter = new ConversionService();
             final DefaultCheck check = new DefaultCheck(processor, config);
 
             server = HttpServer.create(getSocket(), 0);
 
             server.createContext("/", createRootHandler(check, processor));
-            server.createContext("/transform", transformRootHandler(check, processor));
+            server.createContext("/transform", transformRootHandler());
+            server.createContext("/validate", validateRootHandler());
 
-            //server.createContext("/server/health", new HealthHandler(check.getConfiguration(), healthConverter));
-            //server.createContext("/server/config", new ConfigHandler(check.getConfiguration(), converter));
+            // server.createContext("/server/health", new HealthHandler(check.getConfiguration(), healthConverter));
+            // server.createContext("/server/config", new ConfigHandler(check.getConfiguration(), converter));
             server.setExecutor(createExecutor());
             server.start();
-            //log.info("Server {} started", server.getAddress());
+            // log.info("Server {} started", server.getAddress());
             writeOut("Daemon started. Visit http://{0}", this.bindAddress + ":" + this.port);
         } catch (final IOException e) {
-            //log.error("Error starting HttpServer for Valdidator: {}", e.getMessage(), e);
+            // log.error("Error starting HttpServer for Valdidator: {}", e.getMessage(), e);
         }
     }
 
-    private HttpHandler transformRootHandler(final DefaultCheck check, final Processor processor) {
-        final TransformHandler checkHandler = new TransformHandler();
+    private HttpHandler validateRootHandler() {
+        final ValidateHandler checkHandler = new ValidateHandler();
+        return new ValidateRoutingHandler(checkHandler);
+    }
 
-        final GuiHandler gui = new GuiHandler();
+    private HttpHandler transformRootHandler() {
+        final TransformHandler checkHandler = new TransformHandler();
         return new TransformRoutingHandler(checkHandler);
     }
 
