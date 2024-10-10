@@ -29,6 +29,10 @@ class TransformRoutingHandler extends BaseHandler {
 
     private final TransformHandler checkHandler;
 
+    TransformRoutingHandler(TransformHandler checkHandler) {
+        this.checkHandler = checkHandler;
+    }
+
     @Override
     public void handle(final HttpExchange exchange) throws IOException {
         final String requestMethod = exchange.getRequestMethod();

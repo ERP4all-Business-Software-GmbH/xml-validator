@@ -42,10 +42,6 @@ public class TransformHandler extends BaseHandler {
 
     private static final AtomicLong counter = new AtomicLong(0);
 
-    private final Check implemenation;
-
-    private final Processor processor;
-
     @Override
     public void handle(final HttpExchange httpExchange) throws IOException {
         try {
