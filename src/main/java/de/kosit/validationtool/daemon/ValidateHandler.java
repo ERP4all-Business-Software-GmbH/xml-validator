@@ -84,15 +84,17 @@ public class ValidateHandler extends BaseHandler {
 
                                     // Send a response
                                     write(httpExchange, validationResult.getBytes(), APPLICATION_XML, HttpStatus.SC_OK);
-                                } else if (fileName.contains(".pdf")) {
-                                    Path destination = Path.of("uploads/" + fileName);
-                                    Files.write(destination, fileBytes);
-                                    // Validate using the new ByteArrayInputStream
-                                    ZUGFeRDValidator zfv = new ZUGFeRDValidator();
-                                    String validationResult = zfv.validate(fileBytes, fileName);
-                                    // Send a response
-                                    write(httpExchange, validationResult.getBytes(), APPLICATION_XML, HttpStatus.SC_OK);
-                                } else {
+                                }
+                                // else if (fileName.contains(".pdf")) {
+                                // Path destination = Path.of("uploads/" + fileName);
+                                // Files.write(destination, fileBytes);
+                                // // Validate using the new ByteArrayInputStream
+                                // ZUGFeRDValidator zfv = new ZUGFeRDValidator();
+                                // String validationResult = zfv.validate(fileBytes, fileName);
+                                // // Send a response
+                                // write(httpExchange, validationResult.getBytes(), APPLICATION_XML, HttpStatus.SC_OK);
+                                // }
+                                else {
                                     error(httpExchange, HttpStatus.SC_NOT_ACCEPTABLE,
                                             "Invalid content type, expecting multipart/form-data.");
                                 }
